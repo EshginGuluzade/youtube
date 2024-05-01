@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today in History - May 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(to right, #120318, #220f3f);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            color: #f0e6f6;
+            text-shadow: 2px 2px 4px #000000;
+        }
+        p {
+            font-size: 1.5em;
+            width: 80%;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        @media (max-width: 600px) {
+            p {
+                font-size: 1em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="history">
+        <h1>Today in History</h1>
+        <p>Loading...</p> <!-- Placeholder text that will be replaced -->
+    </div>
+
+    <script>
+        window.onload = function() {
+            fetch('history.txt')
+            .then(response => response.text())
+            .then(text => {
+                // Dynamically updating the inner HTML of the paragraph with the content from history.txt
+                document.querySelector('#history p').innerHTML = text;
+            })
+            .catch(error => {
+                // Error handling if the file is not found or another error occurs
+                document.querySelector('#history p').innerHTML = 'Error loading the history. Please try again later.';
+            });
+        };
+    </script>
+</body>
+</html>
