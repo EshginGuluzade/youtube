@@ -1,7 +1,7 @@
 from openai import OpenAI
 import datetime
 
-client = OpenAI(api_key="sk-proj-vts8a1Yv1qQ95y5sOBEkT3BlbkFJunsNhCWHVxKxr8w12Acs")
+client = OpenAI(api_key="your-openapi-key")
 
 
 today = datetime.datetime.now().strftime("%B %d")
