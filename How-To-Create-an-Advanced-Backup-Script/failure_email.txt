@@ -1,0 +1,5 @@
+TO: <put your own email address>
+FROM: <put your own email address>
+Subject: Backup Script Failed
+
+Backup failed!!!
