@@ -3,8 +3,7 @@
 import sys
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-from url_bar import URLBar
+from tabbed_browser import TabbedBrowser
 
 class SimpleBrowser(QMainWindow):
     def __init__(self):
@@ -12,9 +11,8 @@ class SimpleBrowser(QMainWindow):
         self.setWindowTitle('Simple Browser')
         self.setGeometry(100, 100, 1024, 1024)
 
-        self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl('https://www.google.com'))
-        self.setCentralWidget(self.browser)
+        self.tabbed_browser = TabbedBrowser(self)
+        self.setCentralWidget(self.tabbed_browser)
 
         # Navigation bar
         navbar = QToolBar()
@@ -22,29 +20,31 @@ class SimpleBrowser(QMainWindow):
 
         # Back button
         back_btn = navbar.addAction('Back')
-        back_btn.triggered.connect(self.browser.back)
+        back_btn.triggered.connect(self.back)
 
         # Forward button
         forward_btn = navbar.addAction('Forward')
-        forward_btn.triggered.connect(self.browser.forward)
+        forward_btn.triggered.connect(self.forward)
 
         # Reload button
         reload_btn = navbar.addAction('Reload')
-        reload_btn.triggered.connect(self.browser.reload)
+        reload_btn.triggered.connect(self.reload)
 
         # Custom Home button
         home_btn = navbar.addAction('Home')
         home_btn.triggered.connect(self.navigate_home)
 
-        # Custom URL Bar
-        self.url_bar = URLBar()
-        self.url_bar.url_changed.connect(self.browser.setUrl)
-        navbar.addWidget(self.url_bar)
+    def back(self):
+        self.tabbed_browser.current_browser().back()
 
-        self.browser.urlChanged.connect(self.url_bar.update_url)
+    def forward(self):
+        self.tabbed_browser.current_browser().forward()
+
+    def reload(self):
+        self.tabbed_browser.current_browser().reload()
 
     def navigate_home(self):
-        self.browser.setUrl(QUrl('https://www.google.com'))
+        self.tabbed_browser.current_browser().setUrl(QUrl('https://www.google.com'))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
