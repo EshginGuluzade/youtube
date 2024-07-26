@@ -1,15 +1,13 @@
-# main.py
-
 import sys
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar
-from tabbed_browser import TabbedBrowser
+from tabs import TabbedBrowser
 
 class SimpleBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Simple Browser')
-        self.setGeometry(100, 100, 1024, 1024)
+        self.setGeometry(100, 100, 1024, 768)
 
         self.tabbed_browser = TabbedBrowser(self)
         self.setCentralWidget(self.tabbed_browser)
@@ -33,6 +31,10 @@ class SimpleBrowser(QMainWindow):
         # Custom Home button
         home_btn = navbar.addAction('Home')
         home_btn.triggered.connect(self.navigate_home)
+
+        # New Tab button
+        new_tab_btn = navbar.addAction('New Tab')
+        new_tab_btn.triggered.connect(self.tabbed_browser.add_tab)
 
     def back(self):
         self.tabbed_browser.current_browser().back()

@@ -1,5 +1,5 @@
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget
 from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QToolButton
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from url_bar import URLBar
 
@@ -16,9 +16,6 @@ class TabbedBrowser(QWidget):
         self.tabs.setTabsClosable(True)
         self.tabs.tabCloseRequested.connect(self.close_tab)
         self.tabs.currentChanged.connect(self.current_tab_changed)
-
-        # Add new tab button
-        self.tabs.setCornerWidget(self.add_tab_button(), Qt.TopLeftCorner)
 
         self.layout.addWidget(self.tabs)
 
@@ -45,13 +42,6 @@ class TabbedBrowser(QWidget):
 
         browser.setUrl(QUrl("https://www.google.com"))
         return browser, url_bar
-
-    def add_tab_button(self):
-        btn = QToolButton()
-        btn.setText("+")
-        btn.setStyleSheet("QToolButton { border: none; }")
-        btn.clicked.connect(self.add_tab)
-        return btn
 
     def close_tab(self, index):
         if self.tabs.count() > 1:
