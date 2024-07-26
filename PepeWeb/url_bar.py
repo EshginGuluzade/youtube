@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt, QUrl, pyqtSignal
 from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QMouseEvent
 import urllib.parse
 
 class URLBar(QLineEdit):
@@ -9,7 +10,6 @@ class URLBar(QLineEdit):
         super().__init__()
         self.returnPressed.connect(self.navigate_to_url)
         self.setFocusPolicy(Qt.ClickFocus)
-        self.mousePressEvent = self.highlight_url_bar
 
     def navigate_to_url(self):
         url = self.text()
@@ -23,9 +23,9 @@ class URLBar(QLineEdit):
                 url = 'http://' + url
             self.url_changed.emit(QUrl(url))
 
-    def highlight_url_bar(self, event):
+    def mousePressEvent(self, event: QMouseEvent):
+        super().mousePressEvent(event)
         self.selectAll()
-        QLineEdit.mousePressEvent(self, event)
 
     def update_url(self, q):
         self.setText(q.toString())
