@@ -6,7 +6,7 @@ from tabs import TabbedBrowser
 class SimpleBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Simple Browser')
+        self.setWindowTitle('PepeWeb')
         self.setGeometry(100, 100, 1024, 768)
 
         self.tabbed_browser = TabbedBrowser(self)
