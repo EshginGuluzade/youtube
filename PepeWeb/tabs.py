@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtGui import QIcon
 from url_bar import URLBar
 
 class TabbedBrowser(QWidget):
@@ -39,6 +40,9 @@ class TabbedBrowser(QWidget):
 
         browser.loadFinished.connect(lambda _, i=index, browser=browser:
                                      self.update_tab_title(i, browser))
+        
+        # Connect iconChanged signal to update_tab_icon method
+        browser.iconChanged.connect(lambda icon, i=index: self.update_tab_icon(i, icon))
 
         browser.setUrl(QUrl("https://www.google.com"))
         return browser, url_bar
@@ -53,6 +57,9 @@ class TabbedBrowser(QWidget):
         if index == self.tabs.currentIndex():
             title = browser.page().title()
             self.tabs.setTabText(index, title[:15] + '...' if len(title) > 15 else title)
+
+    def update_tab_icon(self, index, icon):
+        self.tabs.setTabIcon(index, icon)
 
     def current_tab_changed(self, index):
         if index != -1:
