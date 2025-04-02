@@ -1,0 +1,17 @@
+{
+    "name": "task-manager",
+    "version": "1.0.0",
+    "description": "Simple task management application for Docker Swarm demo",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js",
+      "dev": "nodemon app.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "pg": "^8.11.3"
+    },
+    "devDependencies": {
+      "nodemon": "^3.0.1"
+    }
+  }

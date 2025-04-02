@@ -1,0 +1,69 @@
+---
+version: '3.8'
+
+networks:
+  taskmanager-overlay-nw:
+    driver: overlay
+    driver_opts:
+      encrypted: 'yes'
+
+volumes:
+  pgdata:
+    driver: local
+
+services:
+  app:
+    image: eshgin/task-manager:1.0.0
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+        delay: 10s
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints:
+          - 'node.role == worker'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_DB=taskdb
+      - POSTGRES_HOST=db
+    ports:
+      - "3000:3000"
+    networks:
+      - taskmanager-overlay-nw
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:15-alpine
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == worker'
+      restart_policy:
+        condition: on-failure
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_DB=taskdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - taskmanager-overlay-nw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
