@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // App version and theme color (for demonstrating rolling updates)
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '2.0.0';
 const THEME_COLOR = '#32a455'; // Green theme
 
 // Configure PostgreSQL connection
