@@ -2,6 +2,8 @@
 
 This tutorial walks you through deploying a resilient multi-container application using Docker Swarm for orchestration.
 
+Youtube link: https://www.youtube.com/watch?v=KxL8qyZ-rS4&t=861s&ab_channel=BugX
+
 ## Architecture
 
 ![alt text](image.png)
@@ -58,7 +60,7 @@ docker node ls
 On manager1:
 ```bash
 git clone https://github.com/EshginGuluzade/youtube.git
-cd youtube/v1
+cd cd youtube/task-manager/v1/
 ```
 
 ### 2. Deploy the Stack
@@ -98,11 +100,6 @@ Update to version 2.0.0 (blue to green theme):
 ```bash
 cd ../v2
 docker stack deploy -c docker-stack.yml taskmanager
-```
-
-Watch the update process:
-```bash
-docker service ps taskmanager_app --watch
 ```
 
 Note how containers update two at a time (configured parallelism) while the application remains available.
