@@ -102,9 +102,8 @@ def analyze_with_claude(content, original_url):
 
     Give me a playful, very short response (you can include emojis if needed) that acknowledges what the reel is about.
     Make it sound natural and casual, like I actually watched the reel.
-    Only return the final response without explanations.
-
-    IMPORTANT: Just give me the final response, don't explain anything or give me a summary about reel content.
+    
+    IMPORTANT FORMAT: Put your response after a line that says "FINAL RESPONSE:" - I will only use the text after this marker.
     """
     
     payload = {
@@ -139,11 +138,36 @@ def analyze_with_claude(content, original_url):
             job_status = job_data.get("status")
             
             if job_status == "completed":
-                # Return Claude's final result
+                # Get Claude's final result
                 result = job_data.get("data", {}).get("finalResult", "")
-                # Clean up the result if needed
-                result = result.strip()
+                
+                # First try to find "FINAL RESPONSE:" marker
+                if "FINAL RESPONSE:" in result:
+                    final_part = result.split("FINAL RESPONSE:", 1)[1].strip()
+                    return final_part
+                
+                # If that fails, try to find the last colon in the response
+                elif ":" in result:
+                    # Split by lines to handle multi-line responses better
+                    lines = result.split('\n')
+                    
+                    # Find the last line with a colon
+                    for line in reversed(lines):
+                        if ":" in line:
+                            parts = line.split(":", 1)
+                            if len(parts) > 1 and len(parts[1].strip()) > 0:
+                                # Check if this looks like a proper response and not just a random colon
+                                if len(parts[1].strip()) > 10:  # Assuming responses will be at least 10 chars
+                                    return parts[1].strip()
+                    
+                    # If we're here, we couldn't extract a good response from colons
+                    # Try to get the last paragraph instead
+                    paragraphs = result.split('\n\n')
+                    return paragraphs[-1].strip()
+                
+                # If all else fails, just return the result
                 return result
+                
             elif job_status == "failed":
                 print(f"Claude task failed: {job_data.get('error')}")
                 return "I couldn't analyze this reel properly, but it looks interesting! 😊"
@@ -168,7 +192,7 @@ async def handle_new_message(event):
         username = getattr(sender, 'username', None)
         
         # Print debug info
-        print(f"Received message from: {username}")
+        #print(f"Received message from: {username}")
         
         # Only process messages from your girlfriend
         if username != GIRLFRIEND_USERNAME:
@@ -189,7 +213,9 @@ async def handle_new_message(event):
             
             if reel_content:
                 # Analyze with Claude
+                print("Analyzing with Claude...")
                 claude_response = analyze_with_claude(reel_content, reel_url)
+                print(f"Claude response: {claude_response}")
                 
                 # Send response
                 await message.respond(claude_response)
@@ -225,7 +251,8 @@ async def main():
     client.add_event_handler(handle_new_message, events.NewMessage)
     
     print("Successfully connected! Monitoring for Instagram reels...")
-    print(f"Waiting for messages from: {GIRLFRIEND_USERNAME}")
+    print("Waiting for messages from Girlfriend...")
+    #print(f"Waiting for messages from: {GIRLFRIEND_USERNAME}")
     
     # Keep client running
     await client.run_until_disconnected()
